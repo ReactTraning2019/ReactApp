@@ -1,58 +1,61 @@
 import React from 'react';
 
-export default class Component extends React.Component{
-  constructor(props){
-    super(props);
-    this.state={
-      students: [
-        {
-          name: 'Robert Downey Jr.',
-          rollNo: '3000'
-        },
-        {
-          name: 'Aakrti Jain',
-          rollNo: '3001'
-        },
-        {
-          name: 'Captain America',
-          rollNo: '3002'
-        },
-        {
-          name: 'Thor',
-          rollNo: '3003'
-        }
-      ],
-      show: false
-    }
-    this.showDetails = this.showDetails.bind(this);
-  }
-
-  showDetails() {
-    this.setState({show:true});
-  }
-
-    componentDidMount() {
-        this.callApi()
-            .then(res => {
-                this.setState({
-                    students: res.map((student) => {
-                        return {
-                            name: student.studentName,
-                            rollNo: student.rollNo
-                        };
-                    })
-                })
-            })
-            .catch(err => console.log(err));
+export default class Component extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            students: [{
+                name: 'Iron Man',
+                rollNo: '3000',
+                Maths: '90',
+                Science: '95',
+                English: '89',
+                Computer: '92'
+            },
+                {
+                    name: 'The Hulk',
+                    rollNo: '3001',
+                    Maths: '57',
+                    Science: '76',
+                    English: '65',
+                    Computer: '65'
+                },
+                {
+                    name: 'Captain America',
+                    rollNo: '3002',
+                    Maths: '80',
+                    Science: '87',
+                    English: '76',
+                    Computer: '79'
+                },
+                {
+                    name: 'Thor',
+                    rollNo: '3003',
+                    Maths: '84',
+                    Science: '87',
+                    English: '83',
+                    Computer: '89'
+                }],
+            show: false,
+            showMarks: false,
+            selectedRollNo: ''
+        };
+        this.showDetails = this.showDetails.bind(this);
+        this.showMarks = this.showMarks.bind(this);
     }
 
-    callApi = async () => {
-        const response = await fetch('/getScore');
-        const body = await response.json();
-        if (response.status !== 200) throw Error(body.message);
+    showDetails() {
+        this.setState({show: true});
+    }
 
-        return body;
-    };
+    showMarks(rollNo) {
+        console.log(rollNo);
+        this.setState({
+            show: false,
+            showMarks: true,
+            selectedRollNo: rollNo
+        });
+    }
 
     render() {
         if (this.state.show) {
@@ -67,15 +70,57 @@ export default class Component extends React.Component{
                             <th>Name</th>
                         </tr>
                         </thead>
-                        {this.state.students.map((student, index)=> (
+                        {this.state.students.map((student, index) => (
                             <tbody key={index}>
                             <tr>
                                 <td>{student.rollNo}</td>
-                                <td>{student.name}</td>
+                                <td>{student.name}
+                                    <button onClick={() => this.showMarks(student.rollNo)} type='button'>Show Marks
+                                    </button>
+                                </td>
                             </tr>
                             </tbody>
                         ))}
                     </table>
+                </div>
+            );
+        }
+
+        if (this.state.showMarks) {
+            const selectedStudent = this.state.students.filter((student) => student.rollNo === this.state.selectedRollNo)[0];
+            console.log(selectedStudent);
+
+            return (
+                <div>
+                    <h2>{`Marks of ${selectedStudent.name}`}</h2>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Score</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{'Maths'}</td>
+                            <td>{selectedStudent.Maths}</td>
+                        </tr>
+                        <tr>
+                            <td>{'Science'}</td>
+                            <td>{selectedStudent.Science}</td>
+                        </tr>
+
+                        <tr>
+                            <td>{'English'}</td>
+                            <td>{selectedStudent.English}</td>
+                        </tr>
+                        <tr>
+                            <td>{'Computer'}</td>
+                            <td>{selectedStudent.Computer}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button onClick={this.showDetails} type='button'>Back</button>
                 </div>
             );
         }
@@ -88,3 +133,5 @@ export default class Component extends React.Component{
     }
 
 }
+
+
