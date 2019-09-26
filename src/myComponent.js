@@ -5,36 +5,36 @@ export default class Component extends React.Component {
         super(props);
         this.state = {
             students: [{
-                name: 'Iron Man',
+                studentName: 'Iron Man',
                 rollNo: '3000',
-                Maths: '90',
-                Science: '95',
-                English: '89',
-                Computer: '92'
+                maths: '90',
+                physics: '95',
+                chemistry: '89',
+                english: '92'
             },
                 {
-                    name: 'The Hulk',
+                    studentName: 'The Hulk',
                     rollNo: '3001',
-                    Maths: '57',
-                    Science: '76',
-                    English: '65',
-                    Computer: '65'
+                    maths: '57',
+                    physics: '76',
+                    chemistry: '65',
+                    english: '65'
                 },
                 {
-                    name: 'Captain America',
+                    studentName: 'Captain America',
                     rollNo: '3002',
-                    Maths: '80',
-                    Science: '87',
-                    English: '76',
-                    Computer: '79'
+                    maths: '80',
+                    physics: '87',
+                    chemistry: '76',
+                    english: '79'
                 },
                 {
-                    name: 'Thor',
+                    studentName: 'Thor',
                     rollNo: '3003',
-                    Maths: '84',
-                    Science: '87',
-                    English: '83',
-                    Computer: '89'
+                    maths: '84',
+                    physics: '87',
+                    chemistry: '83',
+                    english: '89'
                 }],
             show: false,
             showMarks: false,
@@ -43,6 +43,24 @@ export default class Component extends React.Component {
         this.showDetails = this.showDetails.bind(this);
         this.showMarks = this.showMarks.bind(this);
     }
+
+    componentDidMount() {
+        this.callApi()
+            .then(res => {
+                this.setState({
+                    students: res
+                });
+            })
+            .catch(err => console.log(err));
+    }
+
+    callApi = async () => {
+        const response = await fetch('/getScore');
+        const body = await response.json();
+        if (response.status !== 200) throw Error(body.message);
+
+        return body;
+    };
 
     showDetails() {
         this.setState({show: true});
@@ -68,16 +86,15 @@ export default class Component extends React.Component {
                         <tr>
                             <th>Roll number</th>
                             <th>Name</th>
+                            <th>Action</th>
                         </tr>
                         </thead>
                         {this.state.students.map((student, index) => (
                             <tbody key={index}>
                             <tr>
                                 <td>{student.rollNo}</td>
-                                <td>{student.name}
-                                    <button onClick={() => this.showMarks(student.rollNo)} type='button'>Show Marks
-                                    </button>
-                                </td>
+                                <td>{student.studentName}</td>
+                                <td><button onClick={() => this.showMarks(student.rollNo)} type='button'>Show Marks</button></td>
                             </tr>
                             </tbody>
                         ))}
@@ -92,7 +109,7 @@ export default class Component extends React.Component {
 
             return (
                 <div>
-                    <h2>{`Marks of ${selectedStudent.name}`}</h2>
+                    <h2>{`Marks of ${selectedStudent.studentName}`}</h2>
                     <table>
                         <thead>
                         <tr>
@@ -102,21 +119,21 @@ export default class Component extends React.Component {
                         </thead>
                         <tbody>
                         <tr>
-                            <td>{'Maths'}</td>
-                            <td>{selectedStudent.Maths}</td>
+                            <td>{'maths'}</td>
+                            <td>{selectedStudent.maths}</td>
                         </tr>
                         <tr>
-                            <td>{'Science'}</td>
-                            <td>{selectedStudent.Science}</td>
+                            <td>{'physics'}</td>
+                            <td>{selectedStudent.physics}</td>
                         </tr>
 
                         <tr>
-                            <td>{'English'}</td>
-                            <td>{selectedStudent.English}</td>
+                            <td>{'chemistry'}</td>
+                            <td>{selectedStudent.chemistry}</td>
                         </tr>
                         <tr>
-                            <td>{'Computer'}</td>
-                            <td>{selectedStudent.Computer}</td>
+                            <td>{'english'}</td>
+                            <td>{selectedStudent.english}</td>
                         </tr>
                         </tbody>
                     </table>
